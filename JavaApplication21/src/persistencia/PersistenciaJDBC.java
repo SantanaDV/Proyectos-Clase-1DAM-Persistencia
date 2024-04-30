@@ -7,7 +7,9 @@ package persistencia;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import objetos.Alumno;
 
@@ -26,10 +28,13 @@ public final class PersistenciaJDBC extends Persistencia {
     private String url_;
     private String tabla;
 
-    public PersistenciaJDBC(String nombreBD, String ip, String puerto, String usuario, String contrasena_, String url_, String tabla) {
+    public PersistenciaJDBC(String nombreBD, String ip, String puerto, String usuario, String contrasena_, String tabla) {
+        this.puerto = puerto;
+        this.ip=ip;
+        this.nombreBD = nombreBD;
         this.usuario = usuario;
         this.contrasena_ = contrasena_;
-        this.url_ = this.url_ = "jdbc:mysql://" + this.ip + ":" + this.puerto + "/" + this.nombreBD;
+        this.url_ = "jdbc:mysql://" +ip + ":" + puerto + "/" + nombreBD;
         this.tabla = tabla;
     }
 
@@ -104,24 +109,71 @@ public final class PersistenciaJDBC extends Persistencia {
 
     @Override
     public ArrayList<Alumno> cargarDatos() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+                    ArrayList <Alumno> alumnos = new ArrayList<>();
+        try {
+
+            abrirConexion();
+
+            Statement selectStatement = this.conexion_.createStatement();
+            ResultSet rs = selectStatement.executeQuery("Select * From alumnos");
+            if (!rs.isBeforeFirst()) {
+                System.out.println("Sin registros");
+            } else {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String nombre = rs.getString("nombre");
+                    String apellidos = rs.getString("apellidos");
+                    String nacionalidad = rs.getString("nacionalidad");
+                    String fechaNacimiento = rs.getString("fechaNacimiento");
+                    boolean sexo = MasculinoOFemenino(rs.getString("sexo"));
+                   Alumno alumno = new Alumno(id,nombre, apellidos, nacionalidad, fechaNacimiento, sexo);
+                   alumnos.add(alumno);
+                }
+            }
+            rs.close();
+            selectStatement.close();
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        cerrarConexion();
+        return alumnos;
     }
 
     @Override
     public void guardarDatos(ArrayList<Alumno> datos) {
         try {
             abrirConexion();
-            
-            String sql = "INSERT INTO alumnos (id, nombre,apellidos,nacionalidad,fechaNacimiento,sexo) VALUES (?,?,?,?,?,?)";
-                         PreparedStatement ps =this.conexion_.prepareStatement(sql);
+
+            String sql = "INSERT INTO alumnos (nombre,apellidos,nacionalidad,fechaNacimiento,sexo) VALUES (?,?,?,?,?)";
+            PreparedStatement ps = this.conexion_.prepareStatement(sql);
             for (Alumno dato : datos) {
-                
+                ps.setString(1, dato.getNombre());
+                ps.setString(2, dato.getApellidos());
+                ps.setString(3, dato.getNacionalidad());
+                ps.setString(4, dato.getFechaNacimiento());
+                ps.setString(5, dato.MasculinoOFemenino(dato.isSexo()));
+                ps.addBatch();
             }
+
+            int[] filasAfectadas = ps.executeBatch();
+
+            System.out.println("Cantidad de alumnos anadidos: " + filasAfectadas.length);
+            ps.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         cerrarConexion();
 
+    }
+    
+     public boolean MasculinoOFemenino(String sexo){
+        
+         if (sexo.equalsIgnoreCase("masculino")) {
+             return true;
+         }else{
+             return false;
+         }
     }
 
     public void abrirConexion() {

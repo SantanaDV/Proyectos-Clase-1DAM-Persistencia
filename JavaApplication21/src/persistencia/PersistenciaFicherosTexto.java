@@ -15,7 +15,6 @@ import objetos.Alumno;
 /**
  *
  * @author santa
- * @param <Alumnos>
  */
 public final class PersistenciaFicherosTexto extends PersistenciaFichero {
 
@@ -85,7 +84,7 @@ public final class PersistenciaFicherosTexto extends PersistenciaFichero {
         } else {
             sexo = false;
         }
-        Alumno alumno = new Alumno(id, nombre, apellidos, nacionalidad, fechaNacimiento, sexo);
+        Alumno alumno = new Alumno(nombre, apellidos, nacionalidad, fechaNacimiento, sexo);
         return alumno;
 
     }

@@ -26,20 +26,17 @@ public final class PersistenciaFicheroBinario extends PersistenciaFichero{
 
     @Override
     public ArrayList<Alumno> cargarDatos() {
+                    ArrayList<Alumno> salida = new ArrayList<>();
         try {
             File archivoBinario = new File(rutaFichero);
             FileInputStream file = new FileInputStream(archivoBinario);
             ObjectInputStream oIS= new ObjectInputStream(file);
-            ArrayList<Alumno> salida = new ArrayList<>();
-            while (true) {
-                try {
-                  salida.add((Alumno) oIS.readObject());
 
-                } catch (EOFException e) {
-                    System.out.println("Final");
-                    break;
-                }
-            }
+          
+                
+                  salida = ((ArrayList<Alumno>)oIS.readObject());
+
+              
             file.close();
             oIS.close();
             return salida;
@@ -50,7 +47,7 @@ public final class PersistenciaFicheroBinario extends PersistenciaFichero{
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-        return null;
+        return salida;
     }
 
     @Override

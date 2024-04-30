@@ -19,6 +19,14 @@ public class Alumno implements Comparable<Alumno>, Serializable {
     private String fechaNacimiento;
     private boolean sexo;
 
+    public Alumno( String nombre, String apellidos, String nacionalidad, String fechaNacimiento, boolean sexo) {
+        this.nombre = nombre;
+        this.apellidos = apellidos;
+        this.nacionalidad = nacionalidad;
+        this.fechaNacimiento = fechaNacimiento;
+        this.sexo = sexo;
+    }
+
     public Alumno(int id, String nombre, String apellidos, String nacionalidad, String fechaNacimiento, boolean sexo) {
         this.id = id;
         this.nombre = nombre;
@@ -27,6 +35,7 @@ public class Alumno implements Comparable<Alumno>, Serializable {
         this.fechaNacimiento = fechaNacimiento;
         this.sexo = sexo;
     }
+    
 
     @Override
     public int compareTo(Alumno o) {
