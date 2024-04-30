@@ -7,7 +7,7 @@ package interfaz;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import objetos.Contacto;
+import objetos.Alumno;
 import persistencia.Persistencia;
 import persistencia.PersistenciaFicheroBinario;
 import persistencia.PersistenciaFicherosTexto;
@@ -19,27 +19,27 @@ import persistencia.PersistenciaFicherosTexto;
 public class Interfaz {
     public static void main(String[] args) {
         Persistencia  p1 = new PersistenciaFicherosTexto("ficheroTexto.txt");
-        Persistencia <Contacto> p2 = new PersistenciaFicheroBinario("ficheroBinario1.bin");
+        Persistencia <Alumno> p2 = new PersistenciaFicheroBinario("ficheroBinario1.bin");
         
         ArrayList<String> lineas = new ArrayList<>();
-        ArrayList<Contacto> contactos = new ArrayList<>();
+        ArrayList<Alumno> alumnos = new ArrayList<>();
         
         lineas.addAll(Arrays.asList("Nueva linea para el fichero", "Otra linea mas"));
-        contactos.add(new Contacto("Jorge", "Hola S.L", "blabla@gmail.com"));
-        contactos.add(new Contacto("Pepe", "Hola S.L", "blabla@gmail.com"));
+        alumnos.add(new Alumno(101,"Jorge", "Hola S.L", "blabla@gmail.com","mamams"));
+        alumnos.add(new Alumno(102,"Pepe", "Hola S.L", "blabla@gmail.com","hdasjna"));
         System.out.println("TXT Guardando, imprimiendo lineas de fichero de texto");
-        p1.guardarDatos(contactos);
+        p1.guardarDatos(alumnos);
         lineas.clear();
          lineas = p1.cargarDatos();
          System.out.println(lineas);
           System.out.println("BIN Guardando, imprimiendo lineas de fichero de texto");
-        p2.guardarDatos(contactos);
-        contactos.clear();
-         contactos = p2.cargarDatos();
-         System.out.println(contactos);
+        p2.guardarDatos(alumnos);
+        alumnos.clear();
+         alumnos = p2.cargarDatos();
+         System.out.println(alumnos);
         
          
-        
+        Alumno a = new Alumno(0, nombre, apellidos, nacionalidad, fechaNacimiento, true)
     }
     
 }

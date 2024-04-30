@@ -5,12 +5,13 @@
 package persistencia;
 
 import java.util.ArrayList;
+import objetos.Alumno;
 
 /**
  *
  * @author santa
  */
-public abstract class PersistenciaFichero<T> extends Persistencia<T>{
+public abstract class PersistenciaFichero extends Persistencia{
    protected String rutaFichero;
 
     public PersistenciaFichero(String rutaFichero) {
@@ -19,18 +20,18 @@ public abstract class PersistenciaFichero<T> extends Persistencia<T>{
 
    
     
-/*
+
     @Override
-    public ArrayList<T> cargarDatos() {
+    public ArrayList<Alumno> cargarDatos() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public void guardarDatos(ArrayList<T> datos) {
+    public void guardarDatos(ArrayList<Alumno> datos) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-*/
+
 
     public String getRutaFichero() {
         return rutaFichero;

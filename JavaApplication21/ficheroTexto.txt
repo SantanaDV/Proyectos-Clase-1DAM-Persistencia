@@ -1,0 +1,2 @@
+Contacto{nombre=Jorge, empresa=blabla@gmail.com, correo=mamams}
+Contacto{nombre=Pepe, empresa=blabla@gmail.com, correo=hdasjna}

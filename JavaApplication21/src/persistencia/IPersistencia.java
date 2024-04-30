@@ -5,14 +5,16 @@
 package persistencia;
 
 import java.util.ArrayList;
+import objetos.Alumno;
 
 /**
  *
  * @author santa
+ * @param <Alumno>
  */
-public interface IPersistencia <T>{
-            ArrayList <T> cargarDatos();
-            void guardarDatos(ArrayList <T> datos);
+public interface IPersistencia {
+            ArrayList <Alumno> cargarDatos();
+            void guardarDatos(ArrayList <Alumno> datos);
     
             
 }

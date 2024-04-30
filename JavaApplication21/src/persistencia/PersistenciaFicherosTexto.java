@@ -10,38 +10,38 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import objetos.Alumno;
 
 /**
  *
  * @author santa
+ * @param <Alumnos>
  */
-public final class PersistenciaFicherosTexto<T> extends PersistenciaFichero<T>{
+public final class PersistenciaFicherosTexto extends PersistenciaFichero {
 
     public PersistenciaFicherosTexto(String rutaFichero) {
         super(rutaFichero);
     }
 
     @Override
-    public ArrayList<T> cargarDatos() {
+    public ArrayList<Alumno> cargarDatos() {
         try {
             File archivoTexto = new File(rutaFichero);
             FileReader archivoTextoLectura = new FileReader(archivoTexto);
             BufferedReader bf = new BufferedReader(archivoTextoLectura);
             String linea;
-            ArrayList <T> datos = new ArrayList<>();
-            
-             while ((linea =  bf.readLine()) != null) {
-                 String arrayLinea [] = linea.split(",");
-                 for (String dato : arrayLinea) {
-                    
-                     datos.add((T)dato);
-                 }
-                
+            ArrayList<Alumno> datos = new ArrayList<>();
+
+            while ((linea = bf.readLine()) != null) {
+                String arrayLinea[] = linea.split(",");
+                //modificar
+                datos.add(trocearDatos(arrayLinea));
+
             }
-             archivoTextoLectura.close();
-             bf.close();
-             return  datos;
-            
+            archivoTextoLectura.close();
+            bf.close();
+            return datos;
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -49,27 +49,45 @@ public final class PersistenciaFicherosTexto<T> extends PersistenciaFichero<T>{
     }
 
     @Override
-    public void guardarDatos(ArrayList<T> datos) {
-        
-         try {
+    public void guardarDatos(ArrayList<Alumno> datos) {
+
+        try {
             File archivoTexto = new File(rutaFichero);
-             FileWriter archivoTextoLectura = new FileWriter(archivoTexto);
+            FileWriter archivoTextoLectura = new FileWriter(archivoTexto);
             PrintWriter bf = new PrintWriter(archivoTextoLectura);
-             for (T dato : datos) {
-                 bf.println(dato.toString());
-             }
-             archivoTextoLectura.close();
-             bf.close();
-             
-            
+            for (Alumno dato : datos) {
+                bf.println(dato.toString());
+            }
+            archivoTextoLectura.close();
+            bf.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        
-    }
-   
 
-   
-    
+    }
+
+    public Alumno trocearDatos(String[] linea) {
+        int id;
+        String nombre;
+        String apellidos;
+        String nacionalidad;
+        String fechaNacimiento;
+        boolean sexo;
+
+        id = Integer.parseInt(linea[0]);
+        nombre = (linea[1]);
+        apellidos = (linea[2]);
+        nacionalidad = (linea[3]);
+        fechaNacimiento = (linea[4]);
+        if (linea[5].equalsIgnoreCase("masculino")) {
+            sexo = true;
+        } else {
+            sexo = false;
+        }
+        Alumno alumno = new Alumno(id, nombre, apellidos, nacionalidad, fechaNacimiento, sexo);
+        return alumno;
+
+    }
+
 }

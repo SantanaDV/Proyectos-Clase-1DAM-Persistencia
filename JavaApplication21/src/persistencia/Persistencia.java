@@ -8,7 +8,7 @@ package persistencia;
  *
  * @author santa
  */
-public abstract class Persistencia<T> implements IPersistencia<T>{  
+public abstract class Persistencia implements IPersistencia{  
 
    
 }
