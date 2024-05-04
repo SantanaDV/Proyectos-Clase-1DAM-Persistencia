@@ -28,13 +28,14 @@ public final class PersistenciaJDBC extends Persistencia {
     private String url_;
     private String tabla;
 
+    // En el constructor construimos la url en funcion de los atributos que se pasan al objeto
     public PersistenciaJDBC(String nombreBD, String ip, String puerto, String usuario, String contrasena_, String tabla) {
         this.puerto = puerto;
-        this.ip=ip;
+        this.ip = ip;
         this.nombreBD = nombreBD;
         this.usuario = usuario;
         this.contrasena_ = contrasena_;
-        this.url_ = "jdbc:mysql://" +ip + ":" + puerto + "/" + nombreBD;
+        this.url_ = "jdbc:mysql://" + ip + ":" + puerto + "/" + nombreBD;
         this.tabla = tabla;
     }
 
@@ -107,9 +108,11 @@ public final class PersistenciaJDBC extends Persistencia {
         return "PersistenciaJDBC{, nombreBD=" + nombreBD + ", ip=" + ip + ", puerto=" + puerto + ", usuario=" + usuario + ", contrasena_=" + contrasena_ + ", url_=" + url_ + ", tabla=" + tabla + '}';
     }
 
+    
+    //Metodo sobrescrito para cargar datos, una senecia SQL que selecciona todos los datos de la tabla y posteriormente trocea e introduce en una estructura de datos del tipo alumno y devuelve la estructura
     @Override
     public ArrayList<Alumno> cargarDatos() {
-                    ArrayList <Alumno> alumnos = new ArrayList<>();
+        ArrayList<Alumno> alumnos = new ArrayList<>();
         try {
 
             abrirConexion();
@@ -125,9 +128,9 @@ public final class PersistenciaJDBC extends Persistencia {
                     String apellidos = rs.getString("apellidos");
                     String nacionalidad = rs.getString("nacionalidad");
                     String fechaNacimiento = rs.getString("fechaNacimiento");
-                    boolean sexo = MasculinoOFemenino(rs.getString("sexo"));
-                   Alumno alumno = new Alumno(id,nombre, apellidos, nacionalidad, fechaNacimiento, sexo);
-                   alumnos.add(alumno);
+                    boolean sexo = rs.getString("sexo").equalsIgnoreCase("masculino")?true:false;
+                    Alumno alumno = new Alumno(id, nombre, apellidos, nacionalidad, fechaNacimiento, sexo);
+                    alumnos.add(alumno);
                 }
             }
             rs.close();
@@ -140,19 +143,21 @@ public final class PersistenciaJDBC extends Persistencia {
         return alumnos;
     }
 
+    //Metodo sobreescrito que en funcion de los atributos que necesitamos recoge los datos que le introducimos y los introduce en la tabla como un insert into.
     @Override
     public void guardarDatos(ArrayList<Alumno> datos) {
         try {
             abrirConexion();
-
-            String sql = "INSERT INTO alumnos (nombre,apellidos,nacionalidad,fechaNacimiento,sexo) VALUES (?,?,?,?,?)";
+            borrar();
+            String sql = "INSERT INTO alumnos (id,nombre,apellidos,nacionalidad,fechaNacimiento,sexo) VALUES (?,?,?,?,?,?)";
             PreparedStatement ps = this.conexion_.prepareStatement(sql);
             for (Alumno dato : datos) {
-                ps.setString(1, dato.getNombre());
-                ps.setString(2, dato.getApellidos());
-                ps.setString(3, dato.getNacionalidad());
-                ps.setString(4, dato.getFechaNacimiento());
-                ps.setString(5, dato.MasculinoOFemenino(dato.isSexo()));
+                ps.setInt(1, dato.getId());
+                ps.setString(2, dato.getNombre());
+                ps.setString(3, dato.getApellidos());
+                ps.setString(4, dato.getNacionalidad());
+                ps.setString(5, dato.getFechaNacimiento());
+                ps.setString(6, dato.MasculinoOFemenino(dato.isSexo()));
                 ps.addBatch();
             }
 
@@ -166,16 +171,8 @@ public final class PersistenciaJDBC extends Persistencia {
         cerrarConexion();
 
     }
-    
-     public boolean MasculinoOFemenino(String sexo){
-        
-         if (sexo.equalsIgnoreCase("masculino")) {
-             return true;
-         }else{
-             return false;
-         }
-    }
 
+// Metodo que acompaña a los metodos cargarDatos y guardarDatos abriendo la conexión con la BD
     public void abrirConexion() {
         try {
             this.conexion_ = DriverManager.getConnection(this.url_, this.usuario, this.contrasena_);
@@ -186,6 +183,7 @@ public final class PersistenciaJDBC extends Persistencia {
         }
     }
 
+    // Metodo que acompaña a los metodos cargarDatos y guardarDatos cerrando la conexión con la BD
     public void cerrarConexion() {
         try {
             this.conexion_.close();
@@ -195,4 +193,17 @@ public final class PersistenciaJDBC extends Persistencia {
         }
     }
 
+    // Metodo que borra los datos de la tabla para introducir los nuevos que han  pedido por consola, no tiene el metodo abrir y cerrar conexión porque le llamamos dentro de un metodo abierto que ya cierra la conexión
+    //En el caso de que quisieramos sobreescribirlo, tendriamos que solo en el JDBC crear los alumnos sin el id, al ser este autoincremental en la BD, para que no nos diera error.
+    public void borrar() {
+        try {
+
+            Statement updateStatement = this.conexion_.createStatement();
+            updateStatement.executeUpdate("DELETE FROM alumnos");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+
+        }
+
+    }
 }

@@ -33,7 +33,6 @@ public final class PersistenciaFicherosTexto extends PersistenciaFichero {
 
             while ((linea = bf.readLine()) != null) {
                 String arrayLinea[] = linea.split(",");
-                //modificar
                 datos.add(trocearDatos(arrayLinea));
 
             }
@@ -84,7 +83,7 @@ public final class PersistenciaFicherosTexto extends PersistenciaFichero {
         } else {
             sexo = false;
         }
-        Alumno alumno = new Alumno(nombre, apellidos, nacionalidad, fechaNacimiento, sexo);
+        Alumno alumno = new Alumno(id,nombre, apellidos, nacionalidad, fechaNacimiento, sexo);
         return alumno;
 
     }
